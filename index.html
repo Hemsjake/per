@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Discover your MBTI personality type and find your Wuthering Waves character match. 50-question personality test with dark futuristic UI." />
+  <title>WUWA MBTI — Personality Test</title>
+
+  <!-- Favicon: using emoji as inline SVG data URI -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- Particle background -->
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="logo" id="logo-btn" role="button" tabindex="0" aria-label="Home">
+    WUWA<span>MBTI</span>
+  </div>
+  <div class="header-controls">
+    <button class="ctrl-btn" id="audio-toggle" aria-label="Toggle music">♪ <span>OFF</span></button>
+    <button class="ctrl-btn" id="theme-toggle" aria-label="Toggle theme">☾ <span>DARK</span></button>
+  </div>
+</header>
+
+<!-- ===== LOADING SCREEN ===== -->
+<div class="loading-screen" id="loading-screen" role="alert" aria-live="polite">
+  <div class="loader-ring"></div>
+  <div class="loading-text">CALCULATING RESONANCE...</div>
+</div>
+
+<!-- ===== PAGE: HOME ===== -->
+<div id="page-home" class="page active">
+  <div class="hero-bg-shape"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="hero-badge">✦ WUTHERING WAVES × MBTI ✦</div>
+
+    <h1 class="hero-title">
+      <span class="line1">DISCOVER YOUR</span><br/>
+      <span class="line2">RESONANCE TYPE</span>
+    </h1>
+
+    <p class="hero-sub">
+      50 carefully crafted questions to reveal your true MBTI personality type —
+      then find your soul-matched Wuthering Waves character.
+    </p>
+
+    <div class="hero-features">
+      <div class="hero-feat"><span class="dot"></span>50 Personality Questions</div>
+      <div class="hero-feat"><span class="dot"></span>All 16 MBTI Types</div>
+      <div class="hero-feat"><span class="dot"></span>40+ WuWa Characters</div>
+      <div class="hero-feat"><span class="dot"></span>Deep Character Matching</div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-start-test">
+      <span>▶</span> BEGIN TEST
+    </button>
+  </div>
+</div>
+
+<!-- ===== PAGE: TEST ===== -->
+<div id="page-test" class="page">
+  <div class="container">
+    <div class="test-header">
+      <h2>PERSONALITY ANALYSIS</h2>
+      <div class="question-counter" id="question-counter">QUESTION 1 OF 50</div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div style="max-width:760px;margin:0 auto 32px;">
+      <div class="progress-container">
+        <div class="progress-bar" id="progress-bar" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);margin-top:6px;">
+        <span>START</span>
+        <span id="progress-text">1 / 50</span>
+        <span>FINISH</span>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="question-number">Q01</div>
+      <div class="question-text" id="question-text">Loading question...</div>
+      <div class="answer-options" id="answers-container"></div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" id="btn-prev" disabled>← PREVIOUS</button>
+      <button class="btn btn-primary" id="btn-next">NEXT →</button>
+    </div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:0.78rem;margin-top:24px;font-family:var(--font-mono);letter-spacing:0.05em;">
+      Click an answer to auto-advance · Use Previous to review
+    </p>
+  </div>
+</div>
+
+<!-- ===== PAGE: RESULT ===== -->
+<div id="page-result" class="page">
+  <div class="container">
+    <div class="result-hero">
+      <!-- Type display -->
+      <div style="margin-bottom:8px;font-family:var(--font-mono);font-size:0.75rem;color:var(--text-muted);letter-spacing:0.2em;">YOUR RESONANCE TYPE IS</div>
+      <div class="result-type-badge" id="result-type">INTJ</div>
+      <div class="result-title" id="result-title-text">The Architect</div>
+      <div class="result-tagline" id="result-tagline">Imaginative and strategic thinkers with a plan for everything.</div>
+
+      <p class="result-description" id="result-description"></p>
+
+      <!-- Trait Pills -->
+      <div class="result-traits" id="result-traits"></div>
+
+      <!-- Axis bars -->
+      <div class="result-axes">
+        <div class="axis-bar" id="axis-ei"></div>
+        <div class="axis-bar" id="axis-sn"></div>
+        <div class="axis-bar" id="axis-tf"></div>
+        <div class="axis-bar" id="axis-jp"></div>
+      </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="result-cta-section">
+      <h3>✦ FIND YOUR WUTHERING WAVES MATCH ✦</h3>
+      <p>Your personality type has a corresponding resonator in the world of Solaris-3. Discover which Wuthering Waves character shares your soul — complete with lore, combat role, and a deep analysis of why you're cosmically aligned.</p>
+      <div class="result-btns">
+        <button class="btn btn-gold" id="btn-find-match">
+          ⚡ FIND MY CHARACTER
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-share-result">
+          ↗ SHARE RESULT
+        </button>
+        <button class="btn btn-secondary btn-sm" id="btn-retake">
+          ↺ RETAKE TEST
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE: CHARACTER MATCH ===== -->
+<div id="page-character" class="page">
+  <div class="container">
+    <!-- Match Hero -->
+    <div class="match-hero" id="match-hero-section">
+      <h2>YOUR WUTHERING WAVES MATCH</h2>
+    </div>
+
+    <!-- Featured Match Card -->
+    <div class="match-card-featured" id="match-featured-card">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Browser Section -->
+    <div class="section-title" style="margin-bottom:24px;">ALL CHARACTERS ROSTER</div>
+
+    <!-- Search & Filter Controls -->
+    <div class="browser-controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="search"
+          id="char-search"
+          placeholder="Search characters, elements, roles..."
+          autocomplete="off"
+        />
+      </div>
+      <select class="filter-select" id="element-filter" aria-label="Filter by element">
+        <option value="">All Elements</option>
+        <option value="Aero">Aero</option>
+        <option value="Electro">Electro</option>
+        <option value="Fusion">Fusion</option>
+        <option value="Glacio">Glacio</option>
+        <option value="Havoc">Havoc</option>
+        <option value="Spectro">Spectro</option>
+      </select>
+      <select class="filter-select" id="mbti-filter" aria-label="Filter by MBTI">
+        <option value="">All MBTI Types</option>
+        <option>INTJ</option><option>INTP</option>
+        <option>ENTJ</option><option>ENTP</option>
+        <option>INFJ</option><option>INFP</option>
+        <option>ENFJ</option><option>ENFP</option>
+        <option>ISTJ</option><option>ISFJ</option>
+        <option>ESTJ</option><option>ESFJ</option>
+        <option>ISTP</option><option>ISFP</option>
+        <option>ESTP</option><option>ESFP</option>
+      </select>
+    </div>
+
+    <!-- Character Grid -->
+    <div class="char-grid" id="char-browser-grid">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Back button -->
+    <div style="text-align:center;margin-top:20px;margin-bottom:60px;">
+      <button class="btn btn-secondary" id="btn-back-to-result">← BACK TO MY RESULT</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CHARACTER MODAL ===== -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-label="Character details">
+  <div class="modal-box">
+    <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+    <div class="modal-content" id="modal-content">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p>
+    WUWA MBTI TEST &nbsp;·&nbsp;
+    Fan-made project &nbsp;·&nbsp;
+    Not affiliated with Kuro Games &nbsp;·&nbsp;
+    Wuthering Waves © Kuro Games
+  </p>
+  <p style="margin-top:8px;font-size:0.7rem;opacity:0.5;">
+    Character images loaded from community CDN. If images fail to load, placeholder icons are shown.
+  </p>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/data.js"></script>
+<script src="js/script.js"></script>
+
+</body>
+</html>
